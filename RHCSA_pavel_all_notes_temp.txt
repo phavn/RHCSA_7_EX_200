@@ -1,0 +1,995 @@
+Official guides 
+	https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/
+
+
+RHCSA Topics to review
+
+- everything
+- journalctl - https://www.digitalocean.com/community/tutorials/how-to-use-journalctl-to-view-and-manipulate-systemd-logs
+
+
+##### MISC exam Tips #####
+
+	- Stay calm and breath
+	- Complete "easiest" tasks first
+	- Make sure changes are persistent
+	- install "bash-completion" package to assist with command completion. Very usefull for complex tools like nmcli
+	- install "setroubleshoot-server" package to start collection selinux access data
+	- remove "quiet" and "rhgb" option from grub
+
+
+##### Grep regex #####
+
+http://www.robelle.com/smugbook/regexpr.html
+
+	^ (Caret)        =    match expression at the start of a line, as in ^A.
+	$ (Question)     =    match expression at the end of a line, as in A$.
+	\ (Back Slash)   =    turn off the special meaning of the next character, as in \^.
+	[ ] (Brackets)   =    match any one of the enclosed characters, as in [aeiou].
+	                      Use Hyphen "-" for a range, as in [0-9].
+	[^ ]             =    match any one character except those enclosed in [ ], as in [^0-9].
+	. (Period)       =    match a single character of any value, except end of line.
+	* (Asterisk)     =    match zero or more of the preceding character or expression.
+	\{x,y\}          =    match x to y occurrences of the preceding.
+	\{x\}            =    match exactly x occurrences of the preceding.
+	\{x,\}           =    match x or more occurrences of the preceding.
+
+##### Find command #####
+
+
+	# find / -name "filename"
+	# find / -iname "filename"	- case insensivitive search
+
+	# find / -user joe 	- Find all files and dirs owned by user joe
+	# find / group torrent 	- Find all files and dirs with group ownership set to torrent
+
+	# find / -perm 0660	- find all files exactly match 0660 (rwrw-) permissions  
+	# find / ! -perm 0660	- find all files that don't match 0660 permissions
+	# find / -perm -4000 - find all files with GUID set. Other permissions could be set to anything.
+	# find / -perm -g+s  - find all files with GUID set. Other permissions could be set to anything.
+	# find / -type f 		 - find all files
+	# find / -type d 		 - find all directories
+	# find / -type f -empty	 - find all empty files
+	# find / -type d -empty	 - find all empty dirs
+
+	# find / -inum <inode number>	- Find all files (or hard links) by inode number
+
+	There are 3 kind of "timestamps":
+		Access - the last time the file was read
+		Modify - the last time the file was modified (content has been modified)
+		Change - the last time meta data of the file was changed (e.g. permissions)
+
+	# find / -atime 5 		 - find all files or dirs with access time older than 5 days
+	# find / -mtime 5 		 - find all files or dirs with modified time older than 5 days
+	# find / -amin 60		 - find all files or dirs with access time older than 60 mins 
+	# find / -mmin 60		 - find all files or dirs with modified time older than 60 mins
+	# find / -cmin 60		 - find all files or dirs with change time older than 60 mins
+	# find / -mmin -15		 - find all files or dirs that were modified in last 15 mins
+	# find / -cmin -15		 - find all files or dirs that were changed in last 15 mins
+
+	# find / -size +50M -size -100M	- Find all files between 50MB - 100MB in size
+
+	# find / type -f -size +10G -perm -o+r -name ".*.avi" -exec rm -rf {} \;	- Find then delete all hidden avi files larger than 10GB in size that are readable by everyone
+
+### File system structures ###
+
+	- node (contains file attributes, metadata of file, pointer structure)
+	- file (can be considered a table with 2 columns, filename and its inode, inode points to the raw data blocks on the block device)
+	- directory (just a special file, container for other filenames. It contains an array of filenames and inode numbers for each filename. Also it describes the relationship between parent and children.)
+
+### Hard vs soft links ###
+
+# Soft links
+	- can cross the file system,
+	- allows you to link between directories,
+	- has different inodes number and file permissions than original file,
+	- permissions will not be updated,
+	- has only the path of the original file, not the contents.
+
+# Hard links
+	- can’t cross the file system boundaries,
+	- can’t link directories,
+	- has the same inode number and permissions of original file,
+	- permissions will be updated if we change the permissions of source file,
+	- has the actual contents of original file, so that you still can view the contents, even if the original file moved or removed.
+
+
+##### Documentation #####
+
+	- Find additional docs
+	# cd /usr/share/doc
+
+	- List man pages sections
+	# man man
+	
+	- Refresh man pages database
+	# mandb
+	
+	- List all man pages about command. Information is obtained from man database
+	# whatis ls
+
+
+##### BIOS/UEFI #####
+
+# BIOS - Basic Input Output System
+
+	- 16 bit mode
+	- uses MBR - Master Boot Record
+		- MBR is limited to 4 physical partitions
+		- MBR is limited to 2TB disks
+
+# UEFI - Unified Extensible Firmware Interface
+
+	- 32 bit mode
+	- uses GPT - GUID partition table
+		- GPT has support for disks larger than 2TB up to 16exabytes
+		- GPT supports 128 partitions
+		- GPT keeps backup of partition table at the end of the disk
+
+
+##### GRUB2 #####
+
+	- rd.break - Load initramfs then stop before mounting local root file system and before systemd target and init process is started
+	- systemd.unit=emergency.target - mounts local root filesystem and starts some services
+	- systemd.unit=rescue.target 	- mounts all local disks and starts additional services
+
+	# ll /etc/grub2*									- Symbolic linke to grub config file
+	# grub2-mkconfig -o /boot/grub2/grub.cfg			- Generate grub config file for BIOS systems
+	# grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg 	- Generate grub config file for EFI systems
+
+	- Grubby
+		# grubby --info=ALL 			- Show all installed kernel configured with grubby
+		# grubby --default-index		- Displays index of kernel OS gets booted into by default
+		# grubby --set-default-index	- Sets index of default kernel to boot into
+
+# Root password recovery
+	- Add rd.break to grub2 linux16 menu entry
+	# mount -o remount -o rw /mnt/sysroot
+	# chroot /mnt/sysroot
+	# passwd root
+	# touch /.autorelabel
+
+# grub2 command line
+
+	 To enter grub2 command line, press enter to edit grub2 menu during boot then press ctrl + c
+
+	 - Commands
+
+	# ls 								- List all storage devices/partitions
+	# ls (hd0,msdos1)/ 					- List files in root directory (notice /) 
+	# insmod lvm 						- Load lvm module. You must run this if there are lvm logical volumes other "error: 										   unknown file system" error will be thrown when trying to access lvm partitions
+	# cat (hd0,msdos1)/grub2/grub.cfg 	- Cat content of grub.cfg to stdout
+	# cat (lvm/centos-root)/etc/fstab	- Cat content of fstab to stdout
+
+# Reinstall grub2 steps
+
+	- List all then remove grub2-tools configuration files
+		# rpm -qc grub2-tools
+	- Reinstall grub2-tools
+		# yum reinstall grub2-tools
+	- Generate new grub.cfg
+		# grub2-mkconfig -o /boot/grub2/grub.cfg
+
+
+##### Process/system management #####
+
+	- Kill signals - list all:
+		# kill -l
+
+		- SIGTERM	- tell process to exit cleanly
+		- SIGHUP 	- stops process in shell environment. Can make some services re-read configuration file.
+		- SIGKILL 	- force kill
+		- SIGINT	- equivelant to Ctrl + C 
+
+	# pgrep command - list pid's based on argument filters
+	# pkill 	- send kill signals to processes based on argument filters
+	# nice 		- ranges from -20 (highest priority) to 19 (lowest priority)
+	# renice 	- ranges from -20 (highest priority) to 19 (lowest priority)
+
+
+	- System activity report
+		/etc/cron.d/sysstat 			- sar/sysstat cronjobs
+		/var/log/sa 					- Location of sysstat data files
+
+		# yum install sysstat
+		# sar -A
+		# sar -A -f /var/log/sa/sa13 	- Use /var/log/sa/sa13 file to produce a report
+
+	- CPU and storage device stats
+
+		# iostat
+
+
+
+##### Logging #####
+
+- Rsyslog
+
+	- /etc/rsyslog.conf 		- Main config file
+	- /etc/rsyslog.d 			- Additional configs can be placed here
+	- /etc/sysconfig/rsyslog 	- rsyslogd startup parameters can be set in this file
+
+
+	- To specify what information should be logged to which destination, rsyslogd uses
+	facilities, priorities, and destinations:
+		■ A facility specifies a category of information that is logged. Rsyslogd uses a
+		fixed list of facilities, which cannot be extended. This is because of backward
+		compatibility with the legacy syslog service.
+		■ A priority is used to define the severity of the message that needs to be logged.
+		When specifying a priority, by default all messages with that priority and all
+		higher priorities are logged.
+		■ A destination defines where the message should be written to. Typical desti-
+		nations are files, but rsyslog modules can be used as a destination as well, to
+		allow further processing through an rsyslogd module.
+
+	- rsyslogd facilities  - Note: The syslog facilities were defined in the 1980s, and to guarantee backward compat-
+ibility, no new facilities can be added.
+
+		Facility 			Used by
+
+		auth / authpriv 	Messages related to authentication.
+		cron 				Messages generated by the crond service.
+		daemon 				Generic facility that can be used for nonspecified daemons.
+		kern 				Kernel messages.
+		lpr 				Messages generated through the legacy lpd print system.
+		mail 				Email-related messages.
+		mark 				Special facility that can be used to write a marker periodically.
+		news 				Messages generated by the NNTP news system.
+		security 			Same as auth / authpriv. Should not be used anymore.
+		syslog 				Messages generated by the syslog system.
+		user 				Messages generated in user space.
+		uucp 				Messages generated by the legacy UUCP system.
+		local0-7 			Messages generated by serrvices that are configured by any of the local0 through local7 facilities
+
+	- rsyslogd priorities
+
+		Priority Used for
+
+		debug 				Debug messages that will give as much information as possible about service operation.
+		info  				Informational messages about normal service operation.
+		notice 				Used for informational messages about items that might become an issue later.
+		warning/warn 		Something is suboptimal, but there is no real error yet.
+		err/error 			A noncritical error has occurred.
+		crit 				A critical error has occurred.
+		alert 				Used when the availability of the service is about to be discontinued.
+		emerg/panic 		Message generated when the availability of the service is discontinued.
+
+	- rsyslogd facilities and priorities can be found in rsyslog.conf man pages
+		# man rsyslog.conf
+
+
+	- Steps to change httpd loggig from local direct to rsyslog local1 facility:
+
+		- Edit httpd.conf
+			ErrorLog	syslog:local1
+		- # systemctl restart httpd
+		- Edit rsyslog.conf
+			local1:error 	-/var/log/httpd-error.log
+		- # systemctl restart rsyslog
+
+
+- Logrotate
+
+	- Default settings are in /etc/logrotate.conf
+	- Additional configs can be placed here: /etc/logrotate.d/
+
+
+- Journalctl
+
+	 On RHEL 7, journald (which is implemented by the systemd-journald daemon)
+	provides an advanced log management system. journald collects messages from the
+	kernel, the entire boot procedure, and services and writes these messages to an event
+	journal. This event journal is stored in a binary format, and it can be queried using
+	the journalctl command.
+
+	 By default, the journal stores log data in /run/log/journal/. Since /run/ is volatile, log data is
+	lost at reboot. To make the data persistent, it is sufficient to create /var/log/journal/ where
+	systemd-journald will then store the data.
+
+	- Persistent journal steps:
+		# mkdir /var/log/journal
+		# chgrp systemd-journal /var/log/journal
+		# chmod 2755 /var/log/journal
+		# reboot or systemctl restart systemd-journald
+
+	Note: The information above can be found in "# man systemd-journald.service" man pages
+
+	 Because the journal that is written by journald is not persistent between reboots,
+	messages are also forwarded to the rsyslogd service. Rsyslogd writes the messages to
+	different files in the /var/log directory. rsyslogd also offers features that do not exist
+	in journald, such as centralized logging and filtering messages by using modules.\
+
+	# journalctl -f 						- Tail journal messages
+	# journalctl --no-pager					- "Cat" the whole journal to stdout
+	# journalctl "then press" TAB twice		- It will display filters
+			# journalctl _UID=0				- Display root events only
+	# journalctl -o verbose					- Change output to verbose list. Shows every event in a list format with categories.
+	# journalctl -p err 					- Show event with err priority only
+	# journalctl --since or --until 		- Date from/to filter
+	# journalctl --since yesterday -p err 	- Show all err events since yesterday
+
+
+- Logger
+
+	The logger command enables users to write messages to rsyslog from the command line.
+
+	# logger -p kern.err "Error message" 		- kern is facility and err is priority
+
+
+
+##### Systemd #####
+
+	 The systemd System and Service Manager is used to start stuff. The stuff is referred to as units . Units can be many things. One of the most important unit types is the service. Typically, services are processes that povide specific functionality and allow connections from external clients coming in. Apart from services, other unit types exist, such as sockets, mounts, and others. To display a list of available units, type 
+
+		# systemctl --type help
+
+			service
+			socket
+			target
+			device
+			mount
+			automount
+			swap
+			timer
+			path
+			slice
+			scope
+
+	- File system locations
+
+	The system default unit files are in /usr/lib/systemd/system. System-specific modifications (overriding the defaults) are in /etc/systemd/system/. Also, the runtime configuration that is generated automatically is
+	stored in /run/systemd/system/
+
+	- Wants
+
+	Wants in systemd define which units systemd wants when starting a specific target. Wants are created when systemd units are enabled, and this happens by creating a symbolic link in the /etc/systemd/system directory. In this directory, you’ll find a subdirectory for every target, containing wants as symbolic links to specific  services that are to be started.
+
+
+	- Targets
+
+	The unit files are used to build the functionality that is needed on your server. To make it possible to load them in the right order and at the right moment, a specific type of unit is used: the target unit. A simple definition of a target unit is “a group of units.” Some targets are used as the equivalents to the old run levels, which on earlier versions of RHEL were used to define the state a server should be started in.
+
+	# ll /usr/lib/systemd/system | grep ".target"			- List target files
+
+	Some of those targets have a special role because they can be isolated. By isolating a target, you start that target with all of its dependencies. Not all targets can be isolated, but only targets that have the isolate option enabled. AllowIsolate=yes in target file indicates that target can be isolated.
+
+
+	# grep AllowIsolate /usr/lib/systemd/system/*.target 	- Display all targets that can be isolated
+
+	# systemctl isolate <target>							- Isolate a target aka boot into runlevel
+
+
+
+	# Commands. Note: type systemctl then double tap TAB key to list available options
+
+	# systemctl --type=service 						- Display loaded service units
+	# systemctl --type=server -all 					- Display all(including not loaded) service units
+	# systemctl --type=target 						- Display all target units
+	# systemctl show <service unit>					- Display all configuration options for service unit
+	# systemctl show 								- Display all configuration options
+	# systemctl mask <service unit>					- Block service unit from starting
+	# systemctl list-dependencies <service unit>	- Display dependencies. --reverse option can be used to show all 												   units dependant on <service unit>
+	# systemctl list-unit-files --type=service 		- List all service unit files
+	# systemctl list-unit-files --type=target 		- List all target unit files
+
+	# systemd-analyze time 							- Display total time it took to boot
+	# systemd-analyze blame 						- Display time it took to boot every systemd unit
+
+
+	- cgroups
+
+		Control groups (or cgroups) are a feature of the Linux kernel to group processes together and control or limit their resource usage (such as CPU, memory etc.) In systemd, cgroups are primarily used to track processes and to ensure that all processes that belong to a service are terminated when a service is stopped.
+
+		Unlike SysVinit, systemd labels processes associated with a service using cgroups. In this way, systemd uses cgroups to kill all processes in a group, if required. In SysVinit there was an occasional issue of dependant processes not stopping when service is killed with system ending up with orphan or zombie processes.
+
+			# systemd-cgls 					- Display the cgroup hierarchy in a tree format
+
+
+##### Kickstart #####
+
+#TODO: populate this section
+
+
+##### libvirt #####
+
+
+- In order for "virsh console <vm name> to work, vm has to have console defined in grub config. Append console=ttyS0 to grub menu then run grub2-mkconfig. This option should also be used during virt-install text installation via console
+
+# packages to install
+
+# cat /proc/cpuinfo
+
+# virsh
+# virsh domstats <vm name>	- List domain settings like cpus, cpu usage, storage etc.
+# virsh edit <vm name>	- Display and edit VM xml settings. File is located in /etc/libvirt/qemu/<vm name>.xml
+
+# virt-install	-r 2048 -n sambaserver01 --os-variant=rhel7 --disk path=/var/livirt/images/sambaserver01.qcow2,format=qcow2,bus=virtio,size=16 --network network=network_100,model=virtio -l http://<repo location> -x ks=<kick start file location> -x inst.text -x console=tty0
+
+
+
+##### LVM #####
+
+	# pvcreate	<block device(s)>	- Partition should be marked as LVM first (0x8e00 partition type). If it's not marked, pvcreate will automatically mark it as 0x008e
+	# vgcreate <vg name> <block device(s)>
+	# lvcreate -n <lv name> --size <size> <vg name>
+
+	# vgextend <vg name> <block device>
+	# lvextend -r -L +100M <lv name>	 	- Add 100MB to logical volume. -r option automatically resizes partition (resize2fs or xfs_growfs)
+	# lxextend -r -L 10G <lv name>			- Extend logical volume to 10G. -r option automatically resizes partition (resize2fs or xfs_growfs)
+	# lvextend -r -l +100%FREE <lv name>	- Use all VG free extents to extend logical volume. -r option automatically resizes partition (resize2fs or xfs_growfs)
+
+	# lvresize	- Resize LV
+	# lvreduce	- Reduce LV. Doesn't work with XFS as XFS doesn't support file system shrinking
+
+	- LVM display commands
+
+	# pvs 			- Display PV summary
+	# vgs 			- Display VG summary
+	# lvs 			- Display LV summary
+
+	# pvdisplay 	- Display PV detailed info
+	# vgdisplay 	- Display VG detailed info
+	# lvdisplay 	- Display LV detailed info
+
+
+
+## Partitions ###
+
+	- Display commands:
+		# parted -l 	- List disks and it's partitions in easy to read list. Use this instead of fdisk -l
+		# blkid 		- List all partitions including UUID.
+		# findmnt		- List all mounted partition in a tree like easy to read detailed list. Includes file system type used.
+		# lsblk			- List overview of all mounted partitions in a tree like easy to read list. Includes easy to digest RO flag.
+		# fdisk -l
+		# gdisk -l <block device>
+
+
+ - Partition management
+
+	- MBR
+		# fdisk
+
+	- GPT
+		# gdisk
+
+	# partprobe - Inform the OS of partition table changes. Run this command after every partition table change.
+
+	- Partition types
+		0x8200	- SWAP partition
+		0x8300	- Linux partition
+		0x8e00	- LVM partition
+
+- Format partition
+	# mkfs.xfs 		- Format partition to XFS
+	# mkfs.ext4 	- Format partition to EXT4
+
+- SWAP
+	# mkswap <block device>		- Format partition using swap fs
+	# swapoff <block device>	- Disable swap
+	# swapon <block device>		- Enable swap
+
+- XFS
+
+	- Can't reduce xfs partition
+
+	# xfs_growfs <block device or LV>			- Resize xfs partition
+
+	# xfs_admin <block device>					- Get xfs partition information
+	# xfs_admin -L <label name> <block device>	- Set partition label
+	# xfs_admin -U <UUID> <block device>		- Set custom UUID
+	# xfs_admin -U generate <block device>		- Generate new UUID
+
+- EXT4
+	
+	# resize2fs	<block device or LV>			- Resize ext partition
+
+	# tune2fs <block device> 					- Get ext partition information
+	# tune2fs -L <label name> <block device>	- Set partition labels
+	# tune2fs -U <UUID> <block device>			- Set custom UUID
+	# tune2fs -U generate <block device>		- Generate new UUID
+
+
+
+
+##### NFS - Network File System #####
+
+	- Client
+
+		- Install packages
+			# yum install nfs-utils
+		- List mounts on available on server:
+			# showmount -e <ip address>
+		- Mount nfs mount
+			# mount -t nfs <ip address>:/nfsmnt /mnt/nfsmnt
+		- /etc/fstab
+			- When adding nfs mount to /etc/fstab file, make sure to add _netdev option. It makes sure nfs mount is mounted only after network services start
+
+
+	- server- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/nfs-serverconfig
+		- Install packages:
+			# yum install nfs-utils
+		- enable and start NFS service
+			# systemctl enable nfs-server
+			# systemctl enable nfs-config
+			# systemctl start nfs-config
+			# systemctl start nfs-server
+
+		- Add nfs and rpc to firewalld
+			# firewall-cmd --permanent --add-service=nfs
+		- Get port rpc.mountd is listening on
+			# netstat -ntap | grep rpc
+			# firewall-cmd --permanent --add-port=20048/tcp
+			# firewall-cmd --reload
+		- rpcinfo -p <nfs server> command and showmount -e <nfs server> should now work on client
+
+			- Note: rpcbind service has to get started for NFSv3 compatibility or for showmount command - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/s2-nfs-methodology-portmap
+			- Also nfslock and nfs-idmapd services can be usefull. nfslock provides file access locking. nfs-idmapd provides id mapping service
+
+		- Export mount
+			# vi /etc/exports
+		- Load config and Build export table
+			# exportfs -r -v
+
+
+	- NFS security
+		root_squash vs no_root_squash
+
+
+##### AUTOFS #####
+
+	https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/nfs-autofs
+
+	- AutoFS mounts shares on demand when they are accessed. AutoFS works in user space so any user can use it.
+
+	When using automount, you can use two different kinds of automount maps:
+		- An indirect map contains a directory that should be created by automount.
+		Indirect mounting allows for alteration without the need to restart the autofs
+		service, which makes it completely accessible from user space.
+		- A direct file does not involve creation of a directory, it has to exist before auto-
+		mount can mount the (remote) file system
+
+
+	- /etc/auto.master 		- Master map file that specifies local directory to mount shares to and mount config files location
+	- /etc/auto.master.d 	- Individual map files can be created here. They have to end with .autofs  
+
+
+	NFS Steps:
+		- Create map file in /etc/auto.master.d
+			# vi /etc/auto.master.d/nfs.autofs
+		- Add content below
+			- Indirect mount content
+				/shares		/etc/auto.nfs
+			- Direct mount content. It always starts with /-
+				/-			/etc/auto_direct.nfs
+			- Edit indirect config - /etc/auto.nfs. Notice that share directory (server1) has to be absent in /shares
+					server1		-rw,sync 	server1:/home/nfsshare
+				- Dynamic indirect directories entry:
+					*			-rw,sync    server1:/home/ldap/&
+			OR
+			- Edit direct config - /etc/auto_direct.nfs. Notice that share directory has to exist on the client server
+					/shares/server1		-rw,sync 	server1:/home/nfsshare
+
+	SAMBA Steps:
+
+		- autofs entries:
+			/etc/auto.master.d/samba.autofs
+				/mnt	/etc/auto.samba
+
+			/etc/auto.samba 	Note: server path starts with ":"
+				samba_share	-rw,fstype=cifs,username=user1,password=user1	://192.168.0.200/samba_share
+
+
+
+##### SAMBA #####
+
+
+	# firewall-cmd --permanent --add-service=samba-client && firewall-cmd --reload
+	# smbclient -L <ip address> -U <user name>				- Omit username/password for anonymous query
+
+
+	- Note: cifs-utils package has to be installed for below to work. 
+		# mount -t cifs -o username=user1,password=user1 //192.168.0.200/samba_share	/mnt/samba_share
+
+	- fstab entry	
+		- _netdev - makes sure to mount share on boot after network service starts up
+		- x-systemd.automount - automount option which guarantees optimal integration with systemd and makes mount a lot faster
+			//192.168.0.200/samba_share		/mnt/samba_share	cifs 	username=user1,password=user1,_netdev,x-systemd.automount	0 0
+
+		- Use credential file option instead
+			//192.168.0.200/samba_share		/mnt/samba_share	cifs 	_netdev, x-systemd.automount,credentials=/root/credentials	0 0
+
+			- Content of credentials file
+				username=user1
+				password=user1
+				domain=workgroup
+
+
+	- autofs entries:
+		/etc/auto.master.d/samba.autofs
+			/mnt	/etc/auto.samba
+
+		/etc/auto.samba 	Note: server path starts with ":"
+			samba_share	-rw,fstype=cifs,username=user1,password=user1	://192.168.0.200/samba_share
+
+
+
+##### Linux permissions #####
+
+- Linux uses discretionary access control (DAC)
+
+	Permission 		On a file 					On a directory
+	 Read (r)        Perm to read 				 Perm to list content of directory
+	 Write (w) 	     Perm to write/delete 		 Perm to delete files
+	 Execute (x)     Perm to run 				 Perm to access content of files
+
+	Permission 		On a file 					On a directory
+	 SUID 			 Process inherits UID 	 	 No effect
+	 SGID 			 Process inherits GID 		 Files in directory inherit group ownership
+	 Sticky bit (t)  N/A 						 Files in directory can be renamed or removed only by their owners
+
+
+    - Numeric permission mode:
+
+		4 - Read (r)
+		2 - Write (w)
+		1 - Execute (x)
+
+		4 - SUID
+		2 - SGID
+		1 - Sticky bit
+
+
+# ACL
+
+	# getfacl									- List ACL's
+
+	# setfacl -m u:user1:rwx /path/to/file 		- Grant rwx to user1 on file
+	# setfacl -m g:group1:rwx /path/to/file 	- Grant rwx to group1 on file
+
+
+# Default ACL
+	Directories can contain one or more default ACLs. 
+	Default ACL is inherited by files created within the directory.
+
+		# setfacl -d -m -u:user1:rw /path/to/dir/ 				- Grant user1 rw access on all new files in dir/
+
+# ACL mask
+	The mask associated with an ACL limits the permissions avaliable on a file for named users and groups and for the group owner
+
+ 		# setfacl -m mask:r-- /path/to/file 					- Only r permission can be granted to file
+  
+
+
+##### SELINUX Notes #####
+
+- SELinux uses mandatory access control (MAC)
+
+	https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/chap-security-enhanced_linux-introduction
+
+	https://www.digitalocean.com/community/tutorials/an-introduction-to-selinux-on-centos-7-part-1-basic-concepts
+	https://www.digitalocean.com/community/tutorials/an-introduction-to-selinux-on-centos-7-part-2-files-and-processes
+
+
+Security Enhanced Linux (SELinux) provides an additional layer of system security. SELinux fundamentally answers the question: "May <subject> do <action> to <object>", for example: 
+
+
+- Install selinux troubleshooting tools: 
+
+	# yum install -y setroubleshoot setroubleshoot-server setools
+
+- Use matchpathcon command to help verify/troubleshoot context related problems. This command will look at the current context of a resource and compare it with what's listed under the SELinux context database. If different, it will suggest the change required.
+
+	# matchpathcon -V /www/html/index.html
+
+- Change file/dir context temporarily
+
+	# chcon --type <context> <path> i.e. chcon --type httpd_sys_content_t /var/www/html/index.html
+
+- Restore context using context database
+	# restorecon <path>
+
+- Selinux context are listed in:
+	# cat /etc/selinux/targeted/contexts/files/file_contexts
+
+
+# Steps to label /www and /www/html permanently:
+
+	1. Use semanage fcontext command. This will write the new context to the /etc/selinux/targeted/contexts/files/file_contexts.local file. But it won't relabel the files/directories themselves.
+
+		# semanage fcontext --add --type httpd_sys_content_t "/www(/.*)?"
+		# semanage fcontext --add --type httpd_sys_content_t "/www/html(/.*)?"
+
+	2. Check local contexts file for new entries
+
+		# cat /etc/selinux/targeted/contexts/files/file_contexts.local
+
+			# This file is auto-generated by libsemanage
+			# Do not edit directly.
+
+			/www(/.*)?    system_u:object_r:httpd_sys_content_t:s0
+			/www/html(/.*)?    system_u:object_r:httpd_sys_content_t:s0			
+
+	3. Relabel /www and /www/html by running restorecon command
+
+		# restorecon -Rv /www
+
+- List local file context database
+	# semanage fcontext -l
+
+- Relabel filesystem on boot
+	# touch /.autorelabel
+
+- List all SELinux booleans
+	# getsebool -a
+
+- Set SELinux boolean
+	# setsebool -P dhcpd_disable_trans=0
+
+
+
+##### LDAP #####
+
+- Client
+	- Install packages:
+		# yum install openldap-clients nss-pam-ldapd pam_krb5 nfs-utils autofs
+	- Configure using authconfig:
+		# authconfig --enableldap --enableldapauth --enablemkhomedir --enableldaptls --ldaploadcacert=http://ldap.linuxacademy.com/pub/cert.pem --ldapserver=ldap.linuxacademy.com --ldapbasedn="dc=linuxacademy,dc=com" --update
+
+	- Note: use command below to remember command options on exam: 
+		# authconfig --help | grep ldap
+
+	- Alternatively, use authconfig-gtk GUI utility
+
+	- On exam, ldap should be working now on client. If authenticated ldap user is required for it to work, try modifying /etc/nslcd.conf file. Modify binddn and bindpwd directives then restart nslcd and nscd services.
+
+
+##### FreeIPA #####
+
+https://www.linuxtechi.com/install-configure-freeipa-centos-7-server/
+
+- Server
+	- Set up FQDN hostname:
+		# hostnamectl set-hostname <FQDN>
+	- Install packages:
+		# yum update
+		# yum install freeipa-server freeipa-dns
+	- Install/configure FreeIPA server
+		# ipa-server-install
+	- Create home dirs:
+		# authconfig --enablemkhomedir --update
+	- Confirm:
+		# kinit admin
+		# klist
+		# ipa host-show `hostname`
+
+
+- Client
+	# yum install freeipa-clent
+	# ipa-client-install --mkhomedir
+
+
+
+
+##### ACL #####
+
+	- Grant group permissions on directory
+		# setfacl -m g:<group name>:rwx /directory/path
+	- Remove group permissions on directory
+		# setfacl -x g:<group name> /directory/path
+
+	- Grant user permissions on directory
+		# setfacl -m u:<user name>:rwx /directory/path
+	- Remove user permissions on directory
+		# setfacl -x u:<user name> /directory/path
+
+	- Remove all ACLs on directory
+		# setfacl -b /directory/path
+
+
+
+##### Network/nmcli #####
+
+	### NMCLI ###
+     - Note: changes made by nmcli command are persistent
+
+	 - Show brief overview of all interfaces
+	 	# nmcli dev status
+	 - Show overview of connections/interfaces
+	 	# nmcli con show
+	 - Show network interface details
+	 	# nmcli con show <iface>
+	 - Show nmcli man examples
+	 	# man nmcli-examples
+
+	 - Create new connection with static address
+	 	# nmcli con add con-name "newcon" ifname eth0 autoconnect no type ethernet ip4 10.0.0.0/24 gw4 10.0.0.1
+	 - Create a new connection with dhcp. dhcp is set by default when static ip address is not set
+	 	# # nmcli con add con-name "newcon" ifname eth0 autoconnect no type ethernet
+	 - Enable/disable connection
+	 	# nmcli con down <name>
+	 	# nmcli con up <name>
+	 - Remove connection
+	 	# nmcli con delete <con name>
+	 - Modify connection - add DNS server. Note: /etc/resolv.conf get re-readpopulated when NetworkManager gets restarted
+	 	# nmcli con mod <con name> +ipv4.dns "8.8.8.8"
+	 - Edit connection or type "print" to display all connection properties
+	 	# nmcli con edit <con name> 
+	 		nmcli> set connection.autoconnect yes
+	 		nmcli> save
+	 - Enable connection on boot (ONBOOT=yes). Use nmcli con show <connection name> to display all properties
+	 	# nmcli con mod <con name> connection.autoconnect=yes
+	 - Reload configuration
+	 	# nmcli con reload
+
+	### IP command ###
+	 - Note: changes made by ip command are not persistent
+		- See the status:
+			# ip addr show
+			# ip route show
+			# ip link show
+		- Show network interface(s) status
+			# ip -s link
+		- Bring network device up/down
+			# ip link set dev <ifname> [up|down]
+		- Add ip address to interface
+			# ip addr add 10.0.0.5/25 dev <ifname>
+		- Show listening TCP port
+			# ss -lt
+
+
+##### Firewalld/Firewall-cmd #####
+
+   https://www.rootusers.com/how-to-use-firewalld-rich-rules-and-zones-for-filtering-and-nat/
+
+   	- List all zones
+   		# firewall-cmd --list-all-zones
+   	- Get default zone
+   		# firewall-cmd --get-default-zone
+   	- Get all active zones
+   		# firewall-cmd --get-active-zones
+   	- Get zone details
+   		# firewall-cmd --info-zone <zone name>
+
+   	- Block ip address. Note: firewalld uses "rich language" for complex rules. man firewalld.richlanguage for man pages
+   		# firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="10.10.10.0/24" drop'
+
+   	- List rich rules
+   		# firewall-cmd --permanent --zone=public --list-rich-rules
+
+   	- Remove rich rule
+   		# firewall-cmd --permanent --zone=public --remove-rich-rule='<rule>'
+
+
+##### Time #####
+
+	- Hardware/rtc(real-time) clock
+		When a Linux server boots, the hardware clock, also referred to as real-time clock,
+		is read. This clock typically resides in the computer hardware. Generally, it is an
+		integrated circuit on the system board that is completely independent of the current
+		state of the operating system and keeps running even when the computer is shut
+		down. From the hardware clock, the system gets its initial time setting.
+
+   	- System clock
+		System time is a time maintained by the operating system. Once the system has
+		booted, the system clock is completely independent of the hardware clock. There-
+		fore, when system time is changed, the new system time is not automatically syn-
+		chronized with the hardware clock.
+		System time is a time that is maintained by the operating system and it is kept in
+		UTC. Applications running on the server are converting system time into local
+		time. Local time is the actual time in the current time zone. In local time, daylight
+		savings time (DST) is considered so that it always shows an accurate time for that
+		system.
+
+
+		- Show time information (system time, rtc, timezone etc.)
+			# timedatectl
+		- Show time zone (also located in /usr/share/zoneinfo/)
+			# timedatectl list-timezones
+		- Set time zone (sets softlink from /etc/locatime to /usr/share/zoneinfo/ zone file)
+			# timedatectl set-timezone <time zone>
+		- Set time
+			# timedatectl set-time <time>
+
+   	- NTP /Chrony - 
+	   	
+	   	# timedatectl set-ntp 1
+
+	   	# chronyc tracking	- Skew time shows how much to speed up/delay system time as it's running slower/faster than the ntp source
+	   	# chronyc sources -v
+	   		- stratum - how far server is from its clock device source
+
+	   	- Chronyd config file - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/sect-understanding_chrony_and-its_configuration
+	   		
+	   		/etc/chrony.conf
+	   			- rtcsync directive set to on by default. Tells chrony to sync RTC clock to system clock every 11 minutes
+
+##### Task scheduling #####
+
+	- AT
+		/etc/at.deny			- List of users not allowed to run at command
+		/etc/at.allow 			- List of users allowed to use at command if file is not empty. Everyone else will be denied.
+
+		# at now + 2 minutes	- schedule job to run 2 minutes from now
+		# at now + 2 days		- schedule job to run 2 days from now
+		# at <date and time>
+		# atq 					- list scheduled jobs
+		# atr 					- remove scheduled job
+
+
+	- Crontab
+		/etc/cron.deny			- List of users not allowed to use cron
+		/etc/cron.allow 		- List of users allowed to use cron if file is not empty. Everyone else will be denied.
+
+		# man 5 crontab 		- Show crontab format, examples etc.
+
+	- Anacron runs cron jobs that did not execute for various reasons. For example, if server was powered off that day, all hourly jobs would have been missed. Anacron would make sure to run hourly jobs once server is powered on.
+
+
+##### Package management #####
+
+	- RPM
+		# rpm -ivh <package>	- Install rpm package
+		# rpm -Uvh <package>	- Update rpm package
+		# rpm -qi <package>		- Package info
+		# rpm -qa				- List all installed packages
+		# rpm -qc <package>		- List all package configuration files
+		
+
+	- YUM
+		# yum install <remote package>
+		# yum localinstall <local rpm package>
+
+		# yum list 							- 
+		# yum search <package name>			- Find package
+		# yum provides <file name>			- Find package that <file name> belongs to.
+
+		# yum group list 					- List groups
+		# yum group list hidden				- List all groups
+		# yum group info <group name> 		- Display group info
+		# yum group install <group name>	- Install a group
+
+		# yum clean all 					- Clean yum cache
+
+		# yum repolist
+
+		- /etc/yum.repo.d/					- Repo configuration files
+			Required directives:
+			[Repo label]
+			name="Repo name"
+			baseurl=<repo location>
+			gpgcheck=1
+			gpgkey=<location of repo gpg key>
+			enabled=1
+
+
+
+##### User Management #####
+
+	- List of commands
+	# id
+	# getent
+		# getent group <user name>
+		# getent passwd <user name>
+	# groupmod								- Modify group properties like name, gid etc.
+	# usermod 								- Modify user properties
+	# useradd
+	# groupadd
+	# chage
+		# chage -l 							- List account expiry properties
+
+
+	# usermod -g <group> <username>
+	# usermod -G <groups...> <username>		- Adds user to the list of specified secondary groups. It overwrites current group membership.
+	# usermod -aG <groups...> <username>	- Appends user to the list of specified secondary groups. It keeps previous groups membership.
+
+
+	- User account related files:
+		/etc/passwd
+		/etc/group
+		/etc/shadow
+		/etc/skel
+		/etc/default/useradd
+		/etc/login.defs
+
+
+
