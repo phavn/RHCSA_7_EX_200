@@ -1,0 +1,66 @@
+##### Systemd #####
+
+	 The systemd System and Service Manager is used to start stuff. The stuff is referred to as units . Units can be many things. One of the most important unit types is the service. Typically, services are processes that povide specific functionality and allow connections from external clients coming in. Apart from services, other unit types exist, such as sockets, mounts, and others. To display a list of available units, type 
+
+		# systemctl --type help
+
+			service
+			socket
+			target
+			device
+			mount
+			automount
+			swap
+			timer
+			path
+			slice
+			scope
+
+	- File system locations
+
+	The system default unit files are in /usr/lib/systemd/system. System-specific modifications (overriding the defaults) are in /etc/systemd/system/. Also, the runtime configuration that is generated automatically is
+	stored in /run/systemd/system/
+
+	- Wants
+
+	Wants in systemd define which units systemd wants when starting a specific target. Wants are created when systemd units are enabled, and this happens by creating a symbolic link in the /etc/systemd/system directory. In this directory, you’ll find a subdirectory for every target, containing wants as symbolic links to specific  services that are to be started.
+
+
+	- Targets
+
+	The unit files are used to build the functionality that is needed on your server. To make it possible to load them in the right order and at the right moment, a specific type of unit is used: the target unit. A simple definition of a target unit is “a group of units.” Some targets are used as the equivalents to the old run levels, which on earlier versions of RHEL were used to define the state a server should be started in.
+
+	# ll /usr/lib/systemd/system | grep ".target"			- List target files
+
+	Some of those targets have a special role because they can be isolated. By isolating a target, you start that target with all of its dependencies. Not all targets can be isolated, but only targets that have the isolate option enabled. AllowIsolate=yes in target file indicates that target can be isolated.
+
+
+	# grep AllowIsolate /usr/lib/systemd/system/*.target 	- Display all targets that can be isolated
+
+	# systemctl isolate <target>							- Isolate a target aka boot into runlevel
+
+
+
+	# Commands. Note: type systemctl then double tap TAB key to list available options
+
+	# systemctl --type=service 						- Display loaded service units
+	# systemctl --type=server -all 					- Display all(including not loaded) service units
+	# systemctl --type=target 						- Display all target units
+	# systemctl show <service unit>					- Display all configuration options for service unit
+	# systemctl show 								- Display all configuration options
+	# systemctl mask <service unit>					- Block service unit from starting
+	# systemctl list-dependencies <service unit>	- Display dependencies. --reverse option can be used to show all 												   units dependant on <service unit>
+	# systemctl list-unit-files --type=service 		- List all service unit files
+	# systemctl list-unit-files --type=target 		- List all target unit files
+
+	# systemd-analyze time 							- Display total time it took to boot
+	# systemd-analyze blame 						- Display time it took to boot every systemd unit
+
+
+	- cgroups
+
+		Control groups (or cgroups) are a feature of the Linux kernel to group processes together and control or limit their resource usage (such as CPU, memory etc.) In systemd, cgroups are primarily used to track processes and to ensure that all processes that belong to a service are terminated when a service is stopped.
+
+		Unlike SysVinit, systemd labels processes associated with a service using cgroups. In this way, systemd uses cgroups to kill all processes in a group, if required. In SysVinit there was an occasional issue of dependant processes not stopping when service is killed with system ending up with orphan or zombie processes.
+
+			# systemd-cgls 					- Display the cgroup hierarchy in a tree format

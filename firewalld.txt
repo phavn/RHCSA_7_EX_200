@@ -1,0 +1,21 @@
+##### Firewalld/Firewall-cmd #####
+
+   https://www.rootusers.com/how-to-use-firewalld-rich-rules-and-zones-for-filtering-and-nat/
+
+   	- List all zones
+   		# firewall-cmd --list-all-zones
+   	- Get default zone
+   		# firewall-cmd --get-default-zone
+   	- Get all active zones
+   		# firewall-cmd --get-active-zones
+   	- Get zone details
+   		# firewall-cmd --info-zone <zone name>
+
+   	- Block ip address. Note: firewalld uses "rich language" for complex rules. man firewalld.richlanguage for man pages
+   		# firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="10.10.10.0/24" drop'
+
+   	- List rich rules
+   		# firewall-cmd --permanent --zone=public --list-rich-rules
+
+   	- Remove rich rule
+   		# firewall-cmd --permanent --zone=public --remove-rich-rule='<rule>'

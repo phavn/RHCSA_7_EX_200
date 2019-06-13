@@ -1,0 +1,53 @@
+##### Partitions #####
+
+	- Display commands:
+		# parted -l 	- List disks and it's partitions in easy to read list. Use this instead of fdisk -l
+		# blkid 		- List all partitions including UUID.
+		# findmnt		- List all mounted partition in a tree like easy to read detailed list. Includes file system type used.
+		# lsblk			- List overview of all mounted partitions in a tree like easy to read list. Includes easy to digest RO flag.
+		# fdisk -l
+		# gdisk -l <block device>
+
+ - Partition management
+
+	- MBR
+		# fdisk
+
+	- GPT
+		# gdisk
+
+	# partprobe - Inform the OS of partition table changes. Run this command after every partition table change.
+
+	- Partition types
+		0x8200	- SWAP partition
+		0x8300	- Linux partition
+		0x8e00	- LVM partition
+
+- Format partition
+	# mkfs.xfs 		- Format partition to XFS
+	# mkfs.ext4 	- Format partition to EXT4
+
+- SWAP
+	# mkswap <block device>		- Format partition using swap fs
+	# swapoff <block device>	- Disable swap
+	# swapon <block device>		- Enable swap
+
+- XFS
+
+	- Can't reduce xfs partition
+
+	# xfs_growfs <block device or LV>			- Resize xfs partition
+
+	# xfs_admin <block device>					- Get xfs partition information
+	# xfs_admin -L <label name> <block device>	- Set partition label
+	# xfs_admin -U <UUID> <block device>		- Set custom UUID
+	# xfs_admin -U generate <block device>		- Generate new UUID
+
+- EXT4
+	
+	# resize2fs	<block device or LV>			- Resize ext partition
+
+	# tune2fs <block device> 					- Get ext partition information
+	# tune2fs -L <label name> <block device>	- Set partition labels
+	# tune2fs -U <UUID> <block device>			- Set custom UUID
+	# tune2fs -U generate <block device>		- Generate new UUID

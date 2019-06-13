@@ -1,0 +1,20 @@
+##### Task scheduling #####
+
+	- AT
+		/etc/at.deny			- List of users not allowed to run at command
+		/etc/at.allow 			- List of users allowed to use at command if file is not empty. Everyone else will be denied.
+
+		# at now + 2 minutes	- schedule job to run 2 minutes from now
+		# at now + 2 days		- schedule job to run 2 days from now
+		# at <date and time>
+		# atq 					- list scheduled jobs
+		# atr 					- remove scheduled job
+
+
+	- Crontab
+		/etc/cron.deny			- List of users not allowed to use cron
+		/etc/cron.allow 		- List of users allowed to use cron if file is not empty. Everyone else will be denied.
+
+		# man 5 crontab 		- Show crontab format, examples etc.
+
+	- Anacron runs cron jobs that did not execute for various reasons. For example, if server was powered off that day, all hourly jobs would have been missed. Anacron would make sure to run hourly jobs once server is powered on.

@@ -1,0 +1,16 @@
+##### BIOS/UEFI #####
+
+# BIOS - Basic Input Output System
+
+	- 16 bit mode
+	- uses MBR - Master Boot Record
+		- MBR is limited to 4 physical partitions
+		- MBR is limited to 2TB disks
+
+# UEFI - Unified Extensible Firmware Interface
+
+	- 32 bit mode
+	- uses GPT - GUID partition table
+		- GPT has support for disks larger than 2TB up to 16exabytes
+		- GPT supports 128 partitions
+		- GPT keeps backup of partition table at the end of the disk

@@ -1,0 +1,42 @@
+##### Time management #####
+
+	- Hardware/rtc(real-time) clock
+		When a Linux server boots, the hardware clock, also referred to as real-time clock,
+		is read. This clock typically resides in the computer hardware. Generally, it is an
+		integrated circuit on the system board that is completely independent of the current
+		state of the operating system and keeps running even when the computer is shut
+		down. From the hardware clock, the system gets its initial time setting.
+
+   	- System clock
+		System time is a time maintained by the operating system. Once the system has
+		booted, the system clock is completely independent of the hardware clock. There-
+		fore, when system time is changed, the new system time is not automatically syn-
+		chronized with the hardware clock.
+		System time is a time that is maintained by the operating system and it is kept in
+		UTC. Applications running on the server are converting system time into local
+		time. Local time is the actual time in the current time zone. In local time, daylight
+		savings time (DST) is considered so that it always shows an accurate time for that
+		system.
+
+
+		- Show time information (system time, rtc, timezone etc.)
+			# timedatectl
+		- Show time zone (also located in /usr/share/zoneinfo/)
+			# timedatectl list-timezones
+		- Set time zone (sets softlink from /etc/locatime to /usr/share/zoneinfo/ zone file)
+			# timedatectl set-timezone <time zone>
+		- Set time
+			# timedatectl set-time <time>
+
+   	- NTP /Chrony - 
+	   	
+	   	# timedatectl set-ntp 1
+
+	   	# chronyc tracking	- Skew time shows how much to speed up/delay system time as it's running slower/faster than the ntp source
+	   	# chronyc sources -v
+	   		- stratum - how far server is from its clock device source
+
+	   	- Chronyd config file - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/sect-understanding_chrony_and-its_configuration
+	   		
+	   		/etc/chrony.conf
+	   			- rtcsync directive set to on by default. Tells chrony to sync RTC clock to system clock every 11 minutes

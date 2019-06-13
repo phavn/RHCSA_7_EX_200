@@ -1,0 +1,13 @@
+##### Documentation #####
+
+	- Find additional docs
+	# cd /usr/share/doc
+
+	- List man pages sections
+	# man man
+	
+	- Refresh man pages database
+	# mandb
+	
+	- List all man pages about command. Information is obtained from man database
+	# whatis ls

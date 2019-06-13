@@ -1,0 +1,36 @@
+##### Find command #####
+
+
+	# find / -name "filename"
+	# find / -iname "filename"	- case insensivitive search
+
+	# find / -user joe 	- Find all files and dirs owned by user joe
+	# find / group torrent 	- Find all files and dirs with group ownership set to torrent
+
+	# find / -perm 0660	- find all files exactly match 0660 (rwrw-) permissions  
+	# find / ! -perm 0660	- find all files that don't match 0660 permissions
+	# find / -perm -4000 - find all files with GUID set. Other permissions could be set to anything.
+	# find / -perm -g+s  - find all files with GUID set. Other permissions could be set to anything.
+	# find / -type f 		 - find all files
+	# find / -type d 		 - find all directories
+	# find / -type f -empty	 - find all empty files
+	# find / -type d -empty	 - find all empty dirs
+
+	# find / -inum <inode number>	- Find all files (or hard links) by inode number
+
+	There are 3 kind of "timestamps":
+		Access - the last time the file was read
+		Modify - the last time the file was modified (content has been modified)
+		Change - the last time meta data of the file was changed (e.g. permissions)
+
+	# find / -atime 5 		 - find all files or dirs with access time older than 5 days
+	# find / -mtime 5 		 - find all files or dirs with modified time older than 5 days
+	# find / -amin 60		 - find all files or dirs with access time older than 60 mins 
+	# find / -mmin 60		 - find all files or dirs with modified time older than 60 mins
+	# find / -cmin 60		 - find all files or dirs with change time older than 60 mins
+	# find / -mmin -15		 - find all files or dirs that were modified in last 15 mins
+	# find / -cmin -15		 - find all files or dirs that were changed in last 15 mins
+
+	# find / -size +50M -size -100M	- Find all files between 50MB - 100MB in size
+
+	# find / type -f -size +10G -perm -o+r -name ".*.avi" -exec rm -rf {} \;	- Find then delete all hidden avi files larger than 10GB in size that are readable by everyone

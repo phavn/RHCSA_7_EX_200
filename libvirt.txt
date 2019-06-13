@@ -1,0 +1,15 @@
+##### libvirt #####
+
+
+- In order for "virsh console <vm name> to work, vm has to have console defined in grub config. Append console=ttyS0 to grub menu then run grub2-mkconfig. This option should also be used during virt-install text installation via console
+
+# packages to install
+
+# cat /proc/cpuinfo
+
+# virsh
+# virsh domstats <vm name>	- List domain settings like cpus, cpu usage, storage etc.
+# virsh edit <vm name>	- Display and edit VM xml settings. File is located in /etc/libvirt/qemu/<vm name>.xml
+
+# virt-install	-r 2048 -n sambaserver01 --os-variant=rhel7 --disk path=/var/livirt/images/sambaserver01.qcow2,format=qcow2,bus=virtio,size=16 --network network=network_100,model=virtio -l http://<repo location> -x ks=<kick start file location> -x inst.text -x console=tty0
+

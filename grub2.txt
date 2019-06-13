@@ -1,0 +1,42 @@
+##### GRUB2 #####
+
+	- rd.break - Load initramfs then stop before mounting local root file system and before systemd target and init process is started
+	- systemd.unit=emergency.target - mounts local root filesystem and starts some services
+	- systemd.unit=rescue.target 	- mounts all local disks and starts additional services
+
+	# ll /etc/grub2*									- Symbolic linke to grub config file
+	# grub2-mkconfig -o /boot/grub2/grub.cfg			- Generate grub config file for BIOS systems
+	# grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg 	- Generate grub config file for EFI systems
+
+	- Grubby
+		# grubby --info=ALL 			- Show all installed kernel configured with grubby
+		# grubby --default-index		- Displays index of kernel OS gets booted into by default
+		# grubby --set-default-index	- Sets index of default kernel to boot into
+
+# Root password recovery
+	- Add rd.break to grub2 linux16 menu entry
+	# mount -o remount -o rw /mnt/sysroot
+	# chroot /mnt/sysroot
+	# passwd root
+	# touch /.autorelabel
+
+# grub2 command line
+
+	 To enter grub2 command line, press enter to edit grub2 menu during boot then press ctrl + c
+
+	 - Commands
+
+	# ls 								- List all storage devices/partitions
+	# ls (hd0,msdos1)/ 					- List files in root directory (notice /) 
+	# insmod lvm 						- Load lvm module. You must run this if there are lvm logical volumes other "error: 										   unknown file system" error will be thrown when trying to access lvm partitions
+	# cat (hd0,msdos1)/grub2/grub.cfg 	- Cat content of grub.cfg to stdout
+	# cat (lvm/centos-root)/etc/fstab	- Cat content of fstab to stdout
+
+# Reinstall grub2 steps
+
+	- List all then remove grub2-tools configuration files
+		# rpm -qc grub2-tools
+	- Reinstall grub2-tools
+		# yum reinstall grub2-tools
+	- Generate new grub.cfg
+		# grub2-mkconfig -o /boot/grub2/grub.cfg

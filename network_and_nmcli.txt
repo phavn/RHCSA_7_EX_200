@@ -1,0 +1,48 @@
+##### Network/nmcli #####
+
+	### NMCLI ###
+     - Note: changes made by nmcli command are persistent
+
+	 - Show brief overview of all interfaces
+	 	# nmcli dev status
+	 - Show overview of connections/interfaces
+	 	# nmcli con show
+	 - Show network interface details
+	 	# nmcli con show <iface>
+	 - Show nmcli man examples
+	 	# man nmcli-examples
+
+	 - Create new connection with static address
+	 	# nmcli con add con-name "newcon" ifname eth0 autoconnect no type ethernet ip4 10.0.0.0/24 gw4 10.0.0.1
+	 - Create a new connection with dhcp. dhcp is set by default when static ip address is not set
+	 	# # nmcli con add con-name "newcon" ifname eth0 autoconnect no type ethernet
+	 - Enable/disable connection
+	 	# nmcli con down <name>
+	 	# nmcli con up <name>
+	 - Remove connection
+	 	# nmcli con delete <con name>
+	 - Modify connection - add DNS server. Note: /etc/resolv.conf get re-readpopulated when NetworkManager gets restarted
+	 	# nmcli con mod <con name> +ipv4.dns "8.8.8.8"
+	 - Edit connection or type "print" to display all connection properties
+	 	# nmcli con edit <con name> 
+	 		nmcli> set connection.autoconnect yes
+	 		nmcli> save
+	 - Enable connection on boot (ONBOOT=yes). Use nmcli con show <connection name> to display all properties
+	 	# nmcli con mod <con name> connection.autoconnect=yes
+	 - Reload configuration
+	 	# nmcli con reload
+
+	### IP command ###
+	 - Note: changes made by ip command are not persistent
+		- See the status:
+			# ip addr show
+			# ip route show
+			# ip link show
+		- Show network interface(s) status
+			# ip -s link
+		- Bring network device up/down
+			# ip link set dev <ifname> [up|down]
+		- Add ip address to interface
+			# ip addr add 10.0.0.5/25 dev <ifname>
+		- Show listening TCP port
+			# ss -lt

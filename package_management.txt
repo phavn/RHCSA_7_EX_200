@@ -1,0 +1,35 @@
+##### Package management #####
+
+	- RPM
+		# rpm -ivh <package>	- Install rpm package
+		# rpm -Uvh <package>	- Update rpm package
+		# rpm -qi <package>		- Package info
+		# rpm -qa				- List all installed packages
+		# rpm -qc <package>		- List all package configuration files
+		
+
+	- YUM
+		# yum install <remote package>
+		# yum localinstall <local rpm package>
+
+		# yum list 							- 
+		# yum search <package name>			- Find package
+		# yum provides <file name>			- Find package that <file name> belongs to.
+
+		# yum group list 					- List groups
+		# yum group list hidden				- List all groups
+		# yum group info <group name> 		- Display group info
+		# yum group install <group name>	- Install a group
+
+		# yum clean all 					- Clean yum cache
+
+		# yum repolist
+
+		- /etc/yum.repo.d/					- Repo configuration files
+			Required directives:
+			[Repo label]
+			name="Repo name"
+			baseurl=<repo location>
+			gpgcheck=1
+			gpgkey=<location of repo gpg key>
+			enabled=1

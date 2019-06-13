@@ -1,0 +1,49 @@
+##### Linux permissions #####
+
+- Linux uses discretionary access control (DAC)
+
+	Permission 		On a file 					On a directory
+	 Read (r)        Perm to read 				 Perm to list content of directory
+	 Write (w) 	     Perm to write/delete 		 Perm to delete files
+	 Execute (x)     Perm to run 				 Perm to access content of files
+
+	Permission 		On a file 					On a directory
+	 SUID 			 Process inherits UID 	 	 No effect
+	 SGID 			 Process inherits GID 		 Files in directory inherit group ownership
+	 Sticky bit (t)  N/A 						 Files in directory can be renamed or removed only by their owners
+
+
+    - Numeric permission mode:
+
+		4 - Read (r)
+		2 - Write (w)
+		1 - Execute (x)
+
+		4 - SUID
+		2 - SGID
+		1 - Sticky bit
+
+
+# ACL
+
+	# getfacl									- List ACL's
+
+	# setfacl -m u:user1:rwx /path/to/file 		- Grant rwx to user1 on file
+	# setfacl -x u:user1 /path/to/file 			- Revoke all user1 permissions from file
+
+	# setfacl -m g:group1:rwx /path/to/file 	- Grant rwx to group1 on file
+	# setfacl -x g:group1 /path/to/file 		- Revoke all group1 permissions from file
+
+	# setfacl -b /path/to/files 				- Remove all file's ACLs
+
+
+# Default ACL
+	Directories can contain one or more default ACLs. 
+	Default ACL is inherited by files created within the directory.
+
+		# setfacl -d -m -u:user1:rw /path/to/dir/ 				- Grant user1 rw access on all new files in dir/
+
+# ACL mask
+	The mask associated with an ACL limits the permissions avaliable on a file for named users and groups and for the group owner
+
+ 		# setfacl -m mask:r-- /path/to/file 					- Only r permission can be granted to file

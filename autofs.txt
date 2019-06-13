@@ -1,0 +1,42 @@
+##### AUTOFS #####
+
+	https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/nfs-autofs
+
+	- AutoFS mounts shares on demand when they are accessed. AutoFS works in user space so any user can use it.
+
+	When using automount, you can use two different kinds of automount maps:
+		- An indirect map contains a directory that should be created by automount.
+		Indirect mounting allows for alteration without the need to restart the autofs
+		service, which makes it completely accessible from user space.
+		- A direct file does not involve creation of a directory, it has to exist before auto-
+		mount can mount the (remote) file system
+
+
+	- /etc/auto.master 		- Master map file that specifies local directory to mount shares to and mount config files location
+	- /etc/auto.master.d 	- Individual map files can be created here. They have to end with .autofs  
+
+
+	NFS Steps:
+		- Create map file in /etc/auto.master.d
+			# vi /etc/auto.master.d/nfs.autofs
+		- Add content below
+			- Indirect mount content
+				/shares		/etc/auto.nfs
+			- Direct mount content. It always starts with /-
+				/-			/etc/auto_direct.nfs
+			- Edit indirect config - /etc/auto.nfs. Notice that share directory (server1) has to be absent in /shares
+					server1		-rw,sync 	server1:/home/nfsshare
+				- Dynamic indirect directories entry:
+					*			-rw,sync    server1:/home/ldap/&
+			OR
+			- Edit direct config - /etc/auto_direct.nfs. Notice that share directory has to exist on the client server
+					/shares/server1		-rw,sync 	server1:/home/nfsshare
+
+	SAMBA Steps:
+
+		- autofs entries:
+			/etc/auto.master.d/samba.autofs
+				/mnt	/etc/auto.samba
+
+			/etc/auto.samba 	Note: server path starts with ":"
+				samba_share	-rw,fstype=cifs,username=user1,password=user1	://192.168.0.200/samba_share

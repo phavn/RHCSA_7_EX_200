@@ -71,7 +71,7 @@ http://www.robelle.com/smugbook/regexpr.html
 
 	# find / type -f -size +10G -perm -o+r -name ".*.avi" -exec rm -rf {} \;	- Find then delete all hidden avi files larger than 10GB in size that are readable by everyone
 
-### File system structures ###
+##### File system structure #####
 
 	- node (contains file attributes, metadata of file, pointer structure)
 	- file (can be considered a table with 2 columns, filename and its inode, inode points to the raw data blocks on the block device)
@@ -433,7 +433,7 @@ ibility, no new facilities can be added.
 
 
 
-## Partitions ###
+##### Partitions #####
 
 	- Display commands:
 		# parted -l 	- List disks and it's partitions in easy to read list. Use this instead of fdisk -l
@@ -442,7 +442,6 @@ ibility, no new facilities can be added.
 		# lsblk			- List overview of all mounted partitions in a tree like easy to read list. Includes easy to digest RO flag.
 		# fdisk -l
 		# gdisk -l <block device>
-
 
  - Partition management
 
@@ -644,7 +643,13 @@ ibility, no new facilities can be added.
 	# getfacl									- List ACL's
 
 	# setfacl -m u:user1:rwx /path/to/file 		- Grant rwx to user1 on file
+	# setfacl -x u:user1 /path/to/file 			- Revoke all user1 permissions from file
+
 	# setfacl -m g:group1:rwx /path/to/file 	- Grant rwx to group1 on file
+	# setfacl -x g:group1 /path/to/file 		- Revoke all group1 permissions from file
+
+	# setfacl -b /path/to/files 				- Remove all file's ACLs
+
 
 
 # Default ACL
@@ -727,7 +732,7 @@ Security Enhanced Linux (SELinux) provides an additional layer of system securit
 
 
 
-##### LDAP #####
+##### OpenLDAP #####
 
 - Client
 	- Install packages:
@@ -860,7 +865,7 @@ https://www.linuxtechi.com/install-configure-freeipa-centos-7-server/
    		# firewall-cmd --permanent --zone=public --remove-rich-rule='<rule>'
 
 
-##### Time #####
+##### Time management #####
 
 	- Hardware/rtc(real-time) clock
 		When a Linux server boots, the hardware clock, also referred to as real-time clock,

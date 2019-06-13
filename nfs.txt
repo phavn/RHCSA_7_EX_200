@@ -1,0 +1,42 @@
+##### NFS - Network File System #####
+
+	- Client
+
+		- Install packages
+			# yum install nfs-utils
+		- List mounts on available on server:
+			# showmount -e <ip address>
+		- Mount nfs mount
+			# mount -t nfs <ip address>:/nfsmnt /mnt/nfsmnt
+		- /etc/fstab
+			- When adding nfs mount to /etc/fstab file, make sure to add _netdev option. It makes sure nfs mount is mounted only after network services start
+
+
+	- server- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/nfs-serverconfig
+		- Install packages:
+			# yum install nfs-utils
+		- enable and start NFS service
+			# systemctl enable nfs-server
+			# systemctl enable nfs-config
+			# systemctl start nfs-config
+			# systemctl start nfs-server
+
+		- Add nfs and rpc to firewalld
+			# firewall-cmd --permanent --add-service=nfs
+		- Get port rpc.mountd is listening on
+			# netstat -ntap | grep rpc
+			# firewall-cmd --permanent --add-port=20048/tcp
+			# firewall-cmd --reload
+		- rpcinfo -p <nfs server> command and showmount -e <nfs server> should now work on client
+
+			- Note: rpcbind service has to get started for NFSv3 compatibility or for showmount command - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/s2-nfs-methodology-portmap
+			- Also nfslock and nfs-idmapd services can be usefull. nfslock provides file access locking. nfs-idmapd provides id mapping service
+
+		- Export mount
+			# vi /etc/exports
+		- Load config and Build export table
+			# exportfs -r -v
+
+
+	- NFS security
+		root_squash vs no_root_squash

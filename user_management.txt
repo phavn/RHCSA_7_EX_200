@@ -1,0 +1,29 @@
+##### User Management #####
+
+	- List of commands
+	# id
+	# getent
+		# getent group <user name>
+		# getent passwd <user name>
+	# groupmod								- Modify group properties like name, gid etc.
+	# usermod 								- Modify user properties
+	# useradd
+	# groupadd
+	# chage
+		# chage -l 							- List account expiry properties
+
+
+	# usermod -g <group> <username>
+	# usermod -G <groups...> <username>		- Adds user to the list of specified secondary groups. It overwrites current group membership.
+	# usermod -aG <groups...> <username>	- Appends user to the list of specified secondary groups. It keeps previous groups membership.
+
+
+	- User account related files:
+		/etc/passwd
+		/etc/group
+		/etc/shadow
+		/etc/skel
+		/etc/default/useradd
+		/etc/login.defs
+
+

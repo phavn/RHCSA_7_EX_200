@@ -1,0 +1,23 @@
+##### FreeIPA #####
+
+https://www.linuxtechi.com/install-configure-freeipa-centos-7-server/
+
+- Server
+	- Set up FQDN hostname:
+		# hostnamectl set-hostname <FQDN>
+	- Install packages:
+		# yum update
+		# yum install freeipa-server freeipa-dns
+	- Install/configure FreeIPA server
+		# ipa-server-install
+	- Create home dirs:
+		# authconfig --enablemkhomedir --update
+	- Confirm:
+		# kinit admin
+		# klist
+		# ipa host-show `hostname`
+
+
+- Client
+	# yum install freeipa-clent
+	# ipa-client-install --mkhomedir

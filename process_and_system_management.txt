@@ -1,0 +1,27 @@
+##### Process/system management #####
+
+	- Kill signals - list all:
+		# kill -l
+
+		- SIGTERM	- tell process to exit cleanly
+		- SIGHUP 	- stops process in shell environment. Can make some services re-read configuration file.
+		- SIGKILL 	- force kill
+		- SIGINT	- equivelant to Ctrl + C 
+
+	# pgrep command - list pid's based on argument filters
+	# pkill 	- send kill signals to processes based on argument filters
+	# nice 		- ranges from -20 (highest priority) to 19 (lowest priority)
+	# renice 	- ranges from -20 (highest priority) to 19 (lowest priority)
+
+
+	- System activity report
+		/etc/cron.d/sysstat 			- sar/sysstat cronjobs
+		/var/log/sa 					- Location of sysstat data files
+
+		# yum install sysstat
+		# sar -A
+		# sar -A -f /var/log/sa/sa13 	- Use /var/log/sa/sa13 file to produce a report
+
+	- CPU and storage device stats
+
+		# iostat

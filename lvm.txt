@@ -1,0 +1,23 @@
+##### LVM #####
+
+	# pvcreate	<block device(s)>	- Partition should be marked as LVM first (0x8e00 partition type). If it's not marked, pvcreate will automatically mark it as 0x008e
+	# vgcreate <vg name> <block device(s)>
+	# lvcreate -n <lv name> --size <size> <vg name>
+
+	# vgextend <vg name> <block device>
+	# lvextend -r -L +100M <lv name>	 	- Add 100MB to logical volume. -r option automatically resizes partition (resize2fs or xfs_growfs)
+	# lxextend -r -L 10G <lv name>			- Extend logical volume to 10G. -r option automatically resizes partition (resize2fs or xfs_growfs)
+	# lvextend -r -l +100%FREE <lv name>	- Use all VG free extents to extend logical volume. -r option automatically resizes partition (resize2fs or xfs_growfs)
+
+	# lvresize	- Resize LV
+	# lvreduce	- Reduce LV. Doesn't work with XFS as XFS doesn't support file system shrinking
+
+	- LVM display commands
+
+	# pvs 			- Display PV summary
+	# vgs 			- Display VG summary
+	# lvs 			- Display LV summary
+
+	# pvdisplay 	- Display PV detailed info
+	# vgdisplay 	- Display VG detailed info
+	# lvdisplay 	- Display LV detailed info

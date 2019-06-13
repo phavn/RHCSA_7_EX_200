@@ -1,0 +1,14 @@
+##### LDAP #####
+
+- Client
+	- Install packages:
+		# yum install openldap-clients nss-pam-ldapd pam_krb5 nfs-utils autofs
+	- Configure using authconfig:
+		# authconfig --enableldap --enableldapauth --enablemkhomedir --enableldaptls --ldaploadcacert=http://ldap.linuxacademy.com/pub/cert.pem --ldapserver=ldap.linuxacademy.com --ldapbasedn="dc=linuxacademy,dc=com" --update
+
+	- Note: use command below to remember command options on exam: 
+		# authconfig --help | grep ldap
+
+	- Alternatively, use authconfig-gtk GUI utility
+
+	- On exam, ldap should be working now on client. If authenticated ldap user is required for it to work, try modifying /etc/nslcd.conf file. Modify binddn and bindpwd directives then restart nslcd and nscd services.

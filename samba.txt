@@ -1,0 +1,30 @@
+##### SAMBA #####
+
+
+	# firewall-cmd --permanent --add-service=samba-client && firewall-cmd --reload
+	# smbclient -L <ip address> -U <user name>				- Omit username/password for anonymous query
+
+
+	- Note: cifs-utils package has to be installed for below to work. 
+		# mount -t cifs -o username=user1,password=user1 //192.168.0.200/samba_share	/mnt/samba_share
+
+	- fstab entry	
+		- _netdev - makes sure to mount share on boot after network service starts up
+		- x-systemd.automount - automount option which guarantees optimal integration with systemd and makes mount a lot faster
+			//192.168.0.200/samba_share		/mnt/samba_share	cifs 	username=user1,password=user1,_netdev,x-systemd.automount	0 0
+
+		- Use credential file option instead
+			//192.168.0.200/samba_share		/mnt/samba_share	cifs 	_netdev, x-systemd.automount,credentials=/root/credentials	0 0
+
+			- Content of credentials file
+				username=user1
+				password=user1
+				domain=workgroup
+
+
+	- autofs entries:
+		/etc/auto.master.d/samba.autofs
+			/mnt	/etc/auto.samba
+
+		/etc/auto.samba 	Note: server path starts with ":"
+			samba_share	-rw,fstype=cifs,username=user1,password=user1	://192.168.0.200/samba_share
