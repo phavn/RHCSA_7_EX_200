@@ -22,3 +22,5 @@
 
 
 - RHEL7 supports more thatn 10,000 multipath devices
+
+- A volume is generic name for a formatted segment of space that can be used to contain data

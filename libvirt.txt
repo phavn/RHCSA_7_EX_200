@@ -11,7 +11,7 @@
 # virsh domstats <vm name>	- List domain settings like cpus, cpu usage, storage etc.
 # virsh edit <vm name>	- Display and edit VM xml settings. File is located in /etc/libvirt/qemu/<vm name>.xml
 
-# virt-install	-r 2048 -n sambaserver01 --os-variant=rhel7 --disk path=/var/livirt/images/sambaserver01.qcow2,format=qcow2,bus=virtio,size=16 --network network=network_100,model=virtio -l http://<repo location> -x ks=<kick start file location> -x inst.text -x console=tty0
+# virt-install	-r 2048 -n sambaserver01 --os-variant=rhel7 --disk path=/var/livirt/images/sambaserver01.qcow2,format=qcow2,bus=virtio,size=16 --network network=network_100,model=virtio -l http://<repo location> -x ks=<kick start file location> -x inst.text
 
 
 - Hardware assisted virtualization

@@ -1,5 +1,8 @@
 ##### LVM #####
 
+
+- A volume is generic name for a formatted segment of space that can be used to contain data
+
 	# pvcreate	<block device(s)>	- Partition should be marked as LVM first (0x8e00 partition type). If it's not marked, pvcreate will automatically mark it as 0x008e
 	# vgcreate <vg name> <block device(s)>
 	# lvcreate -n <lv name> --size <size> <vg name>
