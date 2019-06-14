@@ -13,3 +13,6 @@ http://www.robelle.com/smugbook/regexpr.html
 	\{x,y\}          =    match x to y occurrences of the preceding.
 	\{x\}            =    match exactly x occurrences of the preceding.
 	\{x,\}           =    match x or more occurrences of the preceding.
+
+	# grep -e "svm|vmx" /proc/cpuinfo 			- Grep for vmx or svm in /proc/cpuinfo
+	# egrep "svm|vmx" /proc/cpuinfo 			- Grep for vmx or svm in /proc/cpuinfo

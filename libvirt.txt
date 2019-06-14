@@ -13,3 +13,21 @@
 
 # virt-install	-r 2048 -n sambaserver01 --os-variant=rhel7 --disk path=/var/livirt/images/sambaserver01.qcow2,format=qcow2,bus=virtio,size=16 --network network=network_100,model=virtio -l http://<repo location> -x ks=<kick start file location> -x inst.text -x console=tty0
 
+
+- Hardware assisted virtualization
+
+    - svm (AMD) or vmx (Intel) cpu flags should be in /proc/cpuinfo if h/w assisted virtualization is supported by h/w and is enabled in BIOS/UEFI
+
+	# grep -e "svm|vmx" /proc/cpuinfo 			- Grep for vmx or svm in /proc/cpuinfo
+	# egrep "svm|vmx" /proc/cpuinfo 			- Grep for vmx or svm in /proc/cpuinfo
+
+	- kvm kernel module has to be loaded
+
+	# lsmod | grep kvm
+		kvm_amd              2177212  6 
+		kvm                   615914  1 kvm_amd
+		
+	  - if not try loading it
+	# modprobe kvm
+
+
