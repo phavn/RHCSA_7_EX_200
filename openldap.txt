@@ -12,3 +12,7 @@
 	- Alternatively, use authconfig-gtk GUI utility
 
 	- On exam, ldap should be working now on client. If authenticated ldap user is required for it to work, try modifying /etc/nslcd.conf file. Modify binddn and bindpwd directives then restart nslcd and nscd services.
+
+
+
+	# ldapsearch -x -h ldap.linuxacademy.com -b "dc=linuxacademy,dc=com"
