@@ -8,9 +8,9 @@
 	 Execute (x)         Perm to run 				 Perm to access content of files
 
 	Permission 		On a file 					On a directory
-	 SUID 			 Process inherits UID 	 			 No effect
-	 SGID 			 Process inherits GID 		 		Files in directory inherit group ownership
-	 Sticky bit (t)  N/A 						 	Files in directory can be renamed or removed only by their owners
+	 SUID 			 Process inherits UID			No effect
+	 SGID 			 Process inherits GID			Files in directory inherit group ownership
+	 Sticky bit (t)  N/A 							Files in directory can be renamed or removed only by their owners
 
 
     - Numeric permission mode:
