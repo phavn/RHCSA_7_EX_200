@@ -6,6 +6,8 @@
 			# yum install nfs-utils
 		- List mounts on available on server:
 			# showmount -e <ip address>
+		- List ports used by rpc
+			# rpcinfo -p <ip address>
 		- Mount nfs mount
 			# mount -t nfs <ip address>:/nfsmnt /mnt/nfsmnt
 		- /etc/fstab
