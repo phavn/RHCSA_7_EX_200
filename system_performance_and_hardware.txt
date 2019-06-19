@@ -1,0 +1,35 @@
+
+- Performance analysis tools:
+	# vmstat
+	# top
+	# iotop
+	# iostat
+	# free 
+	# pidstat
+	# ps
+
+- TOP command options and fields
+
+- VMSTAT command options and fields
+
+- IOSTAT command options and fields
+
+- PIDSTAT
+	
+	- Volunteer vs non-voluntary context switches
+
+	# pidstat -w -p 1147
+
+
+- Hardware information tools:
+
+	# /proc/cpuinfo
+	# lspci -k
+	# lscpu
+	# lshw
+	# cpuid
+	# nproc
+	# dmidecode
+	# hardinfo 	- GTK tool
+
+
