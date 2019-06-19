@@ -3,7 +3,7 @@
 	- Client
 
 		- Install packages
-			# yum install nfs-utils
+			# yum install nfs-utils rpcbind
 		- List mounts on available on server:
 			# showmount -e <ip address>
 		- List ports used by rpc
@@ -27,7 +27,10 @@
 			# firewall-cmd --permanent --add-service=nfs
 		- Get port rpc.mountd is listening on
 			# netstat -ntap | grep rpc
+			# firewall-cmd --permanent --add-service=nfs
+			# firewall-cmd --permanent --add-service=rpc-bind
 			# firewall-cmd --permanent --add-port=20048/tcp
+			# firewall-cmd --permanent --add-port=20048/udp
 			# firewall-cmd --reload
 		- rpcinfo -p <nfs server> command and showmount -e <nfs server> should now work on client
 
