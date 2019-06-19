@@ -32,6 +32,10 @@ Security Enhanced Linux (SELinux) provides an additional layer of system securit
 
 # Steps to label /www and /www/html permanently:
 
+	Note: run command below for examples:
+	
+		# man semanage-fcontext
+
 	1. Use semanage fcontext command. This will write the new context to the /etc/selinux/targeted/contexts/files/file_contexts.local file. But it won't relabel the files/directories themselves.
 
 		# semanage fcontext --add --type httpd_sys_content_t "/www(/.*)?"
