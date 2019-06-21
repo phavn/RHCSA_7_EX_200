@@ -22,6 +22,10 @@
 	- rsyslogd facilities  - Note: The syslog facilities were defined in the 1980s, and to guarantee backward compat-
 ibility, no new facilities can be added.
 
+		- List of facilities and priorities can be lookedup in logger man pages
+			# man logger
+
+
 		Facility 			Used by
 
 		auth / authpriv 	Messages related to authentication.
