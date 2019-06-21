@@ -55,6 +55,25 @@ Security Enhanced Linux (SELinux) provides an additional layer of system securit
 
 		# restorecon -Rv /www
 
+
+# Change http port to 888/tcp
+
+	- change "Listen" directive of http.conf to 888
+
+	- List all current port context
+
+		# selinux port -l
+
+	- Add port 888 as http port to selinux
+
+		# selinux port -a -t http_port_t -p tcp 888
+
+	- Firewall
+
+		# firewall-cmd --permanent --add-port=888/tcp
+		# firewall-cmd --reload
+
+
 - List local file context database
 	# semanage fcontext -l
 
