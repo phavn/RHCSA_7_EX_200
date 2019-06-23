@@ -2,14 +2,40 @@
 
 - Client
 	- Install packages:
-		# yum install openldap-clients nss-pam-ldapd pam_krb5 nfs-utils autofs
+		# yum install openldap-clients nss-pam-ldapd pam_krb5 nfs-utils autofs sssd
+
+	- authconfig will use sssd when the below requirements are met:
+
+      The SSSD service is enabled and possibly started by authconfig when at least two of the following three conditions are met:
+       1) /etc/sssd/sssd.conf file exists (or is configured via the implicit SSSD support)
+       2) SSSD authentication is enabled (pam_sss.so is used in PAM configuration)
+       3) SSSD is enabled for user identity (nsswitch.conf contains sss)
+
+       - Steps to enable sssd use:
+
+			# touch /etc/sssd/sssd.conf
+			# chmod 600 /etc/sssd/sssd.conf
+			# authconfig --enablesssd --enablesssdauth --update 		- This will add sss to nssswitch.conf and bunch of pam modules
+
+	   - Start and enable sssd
+
+		   # systemctl enable sssd
+		   # systemctl start sssd
+
 	- Configure using authconfig:
 		# authconfig --enableldap --enableldapauth --enablemkhomedir --enableldaptls --ldaploadcacert=http://ldap.linuxacademy.com/pub/cert.pem --ldapserver=ldap.linuxacademy.com --ldapbasedn="dc=linuxacademy,dc=com" --update
 
 	- Note: use command below to remember command options on exam: 
 		# authconfig --help | grep ldap
-
 	- Alternatively, use authconfig-gtk GUI utility
+
+
+	- Edit /etc/sssd.conf. Options can be seen in "# man sssd-ldap" and "# man sssd.conf"
+
+		- Add "ldap_tls_reqcert = never"
+		- Make sure "services = nss, pam, autofs" under [sssd] section
+		- restart sssd
+
 
 	- On exam, ldap should be working now on client. If authenticated ldap user is required for it to work, try modifying /etc/nslcd.conf file. Modify binddn and bindpwd directives then restart nslcd and nscd services.
 
