@@ -25,5 +25,11 @@
 		/etc/skel
 		/etc/default/useradd
 		/etc/login.defs
+		/etc/profile				- Used for default settings for all users when starting a login shell
+		/etc/bashrc					- Used to define defaults for all users when starting a subshell
+		~/.profile					- Specific settings for one user applied when starting a login shell
+		~/.bashrc					- Specific settings for one user applied when starting a subshell
+
+
 
 
