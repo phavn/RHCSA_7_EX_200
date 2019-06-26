@@ -9,7 +9,7 @@
 
 	# find / -perm 0660	- find all files exactly match 0660 (rwrw-) permissions  
 	# find / ! -perm 0660	- find all files that don't match 0660 permissions
-	# find / -perm -4000 - find all files with GUID set. Other permissions could be set to anything.
+	# find / -perm -2000 - find all files with GUID set. Other permissions could be set to anything.
 	# find / -perm -g+s  - find all files with GUID set. Other permissions could be set to anything.
 	# find / -type f 		 - find all files
 	# find / -type d 		 - find all directories
