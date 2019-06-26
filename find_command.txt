@@ -5,7 +5,7 @@
 	# find / -iname "filename"	- case insensivitive search
 
 	# find / -user joe 	- Find all files and dirs owned by user joe
-	# find / group torrent 	- Find all files and dirs with group ownership set to torrent
+	# find / -group torrent 	- Find all files and dirs with group ownership set to torrent
 
 	# find / -perm 0660	- find all files exactly match 0660 (rwrw-) permissions  
 	# find / ! -perm 0660	- find all files that don't match 0660 permissions
