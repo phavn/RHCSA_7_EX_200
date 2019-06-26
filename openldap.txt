@@ -36,6 +36,29 @@
 		- Make sure "services = nss, pam, autofs" under [sssd] section
 		- restart sssd
 
+	- sssd.conf example
+
+		[domain/default]
+
+		autofs_provider = ldap
+		cache_credentials = True
+		ldap_search_base = dc=linuxacademy,dc=com
+		id_provider = ldap
+		auth_provider = ldap
+		chpass_provider = ldap
+		ldap_uri = ldap://ldap.linuxacademy.com/
+		ldap_id_use_start_tls = True
+		ldap_tls_cacertdir = /etc/openldap/cacerts
+		ldap_tls_reqcert = never
+		[pam]
+
+		[sssd]
+		domains = default
+		services = nss, pam, autofs
+		[autofs]
+
+
+
 
 	- On exam, ldap should be working now on client. If authenticated ldap user is required for it to work, try modifying /etc/nslcd.conf file. Modify binddn and bindpwd directives then restart nslcd and nscd services.
 
