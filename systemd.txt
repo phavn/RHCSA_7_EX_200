@@ -44,7 +44,7 @@
 	# Commands. Note: type systemctl then double tap TAB key to list available options
 
 	# systemctl --type=service 						- Display loaded service units
-	# systemctl --type=server -all 					- Display all(including not loaded) service units
+	# systemctl --type=service -all 					- Display all(including not loaded) service units
 	# systemctl --type=target 						- Display all target units
 	# systemctl show <service unit>					- Display all configuration options for service unit
 	# systemctl show 								- Display all configuration options
