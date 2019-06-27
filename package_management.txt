@@ -6,6 +6,7 @@
 		# rpm -qi <package>		- Package info
 		# rpm -qa				- List all installed packages
 		# rpm -qc <package>		- List all package configuration files
+		# rpm -ql <package>		- List all files that belong to package
 		
 
 	- YUM
