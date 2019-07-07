@@ -11,6 +11,8 @@
 	 	# nmcli con show <iface>
 	 - Show nmcli man examples
 	 	# man nmcli-examples
+	- Description of settings and properties of NetworkManager connection profiles
+		# man nm-settings
 
 	 - Create new connection with static address
 	 	# nmcli con add con-name "newcon" ifname eth0 autoconnect no type ethernet ip4 10.0.0.0/24 gw4 10.0.0.1
