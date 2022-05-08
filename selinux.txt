@@ -62,11 +62,11 @@ Security Enhanced Linux (SELinux) provides an additional layer of system securit
 
 	- List all current port context
 
-		# selinux port -l
+		# semanage port -l
 
 	- Add port 888 as http port to selinux
 
-		# selinux port -a -t http_port_t -p tcp 888
+		# semanage port -a -t http_port_t -p tcp 888
 
 	- Firewall
 
